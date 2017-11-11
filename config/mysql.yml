@@ -1,0 +1,20 @@
+connection:
+  host: localhost
+  port: 3306
+  db: test
+  user: test
+  pw: test
+
+tables:
+  test1:
+    name: test1
+    columns:
+      - test_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY
+      - test_text TEXT
+      - test_score FLOAT
+
+  test2:
+    name: test2
+    columns:
+     - test_id TINYINT
+     - test_content VARCHAR(256)

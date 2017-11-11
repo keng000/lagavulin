@@ -6,7 +6,6 @@ import sqlalchemy
 from sqlalchemy import Table, MetaData, select, func, and_, desc
 import yaml
 
-
 fixed_column_list = [
     "created_at DATETIME DEFAULT CURRENT_TIMESTAMP",
     "updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
@@ -15,8 +14,11 @@ fixed_column_list = [
 
 class AlchemyBase(object):
     def __init__(self, yaml_file_path="../config/mysql.yml"):
-        self.yaml_file_path = yaml_file_path
-        self.config = yaml.load(open(yaml_file_path, 'r'))
+        yaml_file_path = yaml_file_path
+        config_file = open(yaml_file_path, 'r')
+        self.config = yaml.load(config_file)
+        config_file.close()
+
         self.engine = self.get_engine()
         self.metadata = sqlalchemy.MetaData(self.engine)
         self.metadata.reflect()
@@ -44,7 +46,11 @@ class AlchemyBase(object):
 
     def initialize_db(self):
         for table_name in self.tables.keys():
-            self.create_table(table_name)
+            if table_name in self.config["tables"]:
+                self.create_table(table_name)
+            else:
+                raise (SystemError(
+                    "There is a table in DB which is not in the config file.\ntable_name: %s is Ignored." % table_name))
 
     def create_table(self, table_name):
         try:
