@@ -23,22 +23,37 @@ class TestAlchemyBase(unittest.TestCase):
         self.base.create_table("test1")
         element = self.base.execute_query("DESC test1")
         answer = [
-            ('test_id', 'int(11)', 'NO', 'PRI', None, 'auto_increment'),
-            ('test_text', 'text', 'YES', '', None, ''),
-            ('test_score', 'float', 'YES', '', None, ''),
-            ('created_at', 'datetime', 'YES', '', 'CURRENT_TIMESTAMP', ''),
-            ('updated_at', 'datetime', 'YES', '', 'CURRENT_TIMESTAMP', 'on update CURRENT_TIMESTAMP')]
-        self.assertListEqual(answer, element)
+            ("test_id", "int(11)", "NO", "PRI", None, "auto_increment"),
+            ("test_text", "text", "YES", "", None, ""),
+            ("test_score", "float", "YES", "", None, ""),
+            ("created_at", "datetime", "YES", "", "CURRENT_TIMESTAMP", ""),
+            ("updated_at", "datetime", "YES", "", "CURRENT_TIMESTAMP", "on update CURRENT_TIMESTAMP")]
+        self.assertListEqual(element, answer)
 
     def test_initialize_db(self):
         self.base.initialize_db()
         table_names = self.base.execute_query("SHOW TABLES")
-        answer = [('test1',), ('test2',)]
+        answer = [("test1",), ("test2",)]
         self.assertListEqual(table_names, answer)
+        
+    def test_get_column_names(self):
+        col_names = self.base.get_colomn_names("test1")
+        answer = ["test_id", "test_text", "test_score"]
+        self.assertListEqual(col_names, answer)
+
+    def test_insert_dataframe(self):
+        import pandas as pd
+        self.base.create_table("test2")
+        df = pd.DataFrame([[1, 'lagavulin'], [2, 'laphroaig']], columns=['test_id', 'test_content'])
+        self.base.insert_dataframe(df, 'test2')
+
+        res = self.base.execute_query("SELECT test_id, test_content FROM test2")
+        answer = [(1, 'lagavulin'), (2, 'laphroaig')]
+        self.assertListEqual(res, answer)
 
     def tearDown(self):
         del self.base
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

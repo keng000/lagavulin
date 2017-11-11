@@ -89,3 +89,17 @@ class AlchemyBase(object):
 
     def execute_query(self, query):
         return self.engine.execute(query).fetchall()
+
+    def get_colomn_names(self, table_name):
+        try:
+            columns = self.config["tables"][table_name]["columns"]
+        except KeyError:
+            raise "table %s doesn't exist in config" % table_name
+
+        column_names = [line.split(" ")[0] for line in columns]
+        return column_names
+
+    def insert_dataframe(self, data_frame, table_name, if_exist="append"):
+        conn = self.get_connection()
+        data_frame.to_sql(con=conn, name=table_name, if_exists=if_exist, index=None)
+        conn.close()
