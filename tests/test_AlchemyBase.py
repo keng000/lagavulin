@@ -11,7 +11,7 @@ class TestAlchemyBase(unittest.TestCase):
     def test_get_engine(self):
         self.assertIsInstance(self.base.engine, sqlalchemy.engine.base.Engine)
 
-        engine = self.base.get_engine()
+        engine = self.base._get_engine()
         self.assertIsInstance(engine, sqlalchemy.engine.base.Engine)
 
     def test_get_connection(self):

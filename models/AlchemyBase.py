@@ -19,7 +19,7 @@ class AlchemyBase(object):
         self.config = yaml.load(config_file)
         config_file.close()
 
-        self.engine = self.get_engine()
+        self.engine = self._get_engine()
         self.metadata = sqlalchemy.MetaData(self.engine)
         self.metadata.reflect()
 
@@ -32,13 +32,21 @@ class AlchemyBase(object):
         for table in self.metadata.sorted_tables:
             self.tables[table.description] = table
 
-    def get_engine(self):
+    def _get_engine(self):
         mysql_url = "mysql+pymysql://%s:%s@%s/%s?charset=utf8" % \
                     (self.config["connection"]["user"],
                      self.config["connection"]["pw"],
                      self.config["connection"]["host"],
                      self.config["connection"]["db"])
-        engine = sqlalchemy.create_engine(mysql_url, encoding="utf-8", echo=False)
+        if 'ssl' in self.config['connection']:
+            ssl_args = {
+                'ssl': {
+                    'ca': self.config['connection']['ssl']
+                }
+            }
+            engine = sqlalchemy.create_engine(mysql_url, encoding="utf-8", echo=False, connect_args=ssl_args)
+        else:
+            engine = sqlalchemy.create_engine(mysql_url, encoding="utf-8", echo=False)
         return engine
 
     def get_connection(self):
@@ -88,9 +96,12 @@ class AlchemyBase(object):
         self.tables[table_name] = self.metadata.tables[table_name]
 
     def execute_query(self, query):
-        return self.engine.execute(query).fetchall()
+        conn = self.get_connection()
+        res = conn.execute(query).fetchall()
+        conn.close()
+        return res
 
-    def get_colomn_names(self, table_name):
+    def get_column_names(self, table_name):
         try:
             columns = self.config["tables"][table_name]["columns"]
         except KeyError:
