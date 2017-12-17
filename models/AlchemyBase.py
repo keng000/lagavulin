@@ -1,9 +1,7 @@
 # coding:utf-8
 
 import copy
-import pandas
 import sqlalchemy
-from sqlalchemy import Table, MetaData, select, func, and_, desc
 import yaml
 
 fixed_column_list = [
@@ -57,7 +55,7 @@ class AlchemyBase(object):
             if table_name in self.config["tables"]:
                 self.create_table(table_name)
             else:
-                raise (SystemError(
+                print(SystemError(
                     "There is a table in DB which is not in the config file.\ntable_name: %s is Ignored." % table_name))
 
     def create_table(self, table_name):
