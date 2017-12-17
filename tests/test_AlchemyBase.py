@@ -33,7 +33,7 @@ class TestAlchemyBase(unittest.TestCase):
     def test_initialize_db(self):
         self.base.initialize_db()
         table_names = self.base.execute_query("SHOW TABLES")
-        answer = [("performance_test",), ("test1",), ("test2",)]
+        answer = [("performance_test",), ("test1",), ("test2",), ("dummy",)]
         self.assertListEqual(sorted(table_names), sorted(answer))
         
     def test_get_column_names(self):

@@ -1,0 +1,25 @@
+DROP TABLE IF EXISTS test1;
+CREATE TABLE test1 (
+  test_id int(11) NOT NULL AUTO_INCREMENT,
+  test_text text,
+  test_score float DEFAULT NULL,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`test_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS test2;
+CREATE TABLE test2 (
+  test_id tinyint(4) DEFAULT NULL,
+  test_content varchar(256) DEFAULT NULL,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+DROP TABLE IF EXISTS dummy;
+CREATE TABLE dummy (
+  idx int(11) DEFAULT NULL,
+  jdx int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
