@@ -1,6 +1,5 @@
 # coding:utf-8
 
-import copy
 import sqlalchemy
 import yaml
 
@@ -69,20 +68,11 @@ class AlchemyBase(object):
         except KeyError:
             additional_config = None
 
-        raw_columns = []
-        for column_item in columns:
-            raw_columns.append(column_item.split(" ")[0])
-
-        all_columns = copy.deepcopy(columns)
-        all_raw_columns = copy.deepcopy(raw_columns)
-        all_columns.extend(fixed_column_list)
-
-        for column_item in fixed_column_list:
-            all_raw_columns.append(column_item.split(" ")[0])
+        columns.extend(fixed_column_list)
 
         conn = self.get_connection()
         conn.execute("DROP TABLE IF EXISTS %s" % table_name)
-        columns_str = ",".join(all_columns)
+        columns_str = ",".join(columns)
         if additional_config:
             query = "CREATE TABLE %s (%s) %s" % (table_name, columns_str, additional_config)
         else:
