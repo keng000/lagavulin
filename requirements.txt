@@ -1,0 +1,4 @@
+numpy==1.13.3
+scipy==0.19.1
+SQLAlchemy==1.1.13
+tqdm==4.19.5
