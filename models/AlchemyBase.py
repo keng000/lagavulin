@@ -83,12 +83,6 @@ class AlchemyBase(object):
         self.metadata.reflect()
         self.tables[table_name] = self.metadata.tables[table_name]
 
-    def execute_query(self, query):
-        conn = self.get_connection()
-        res = conn.execute(query).fetchall()
-        conn.close()
-        return res
-
     def get_column_names(self, table_name):
         try:
             columns = self.config["tables"][table_name]["columns"]
