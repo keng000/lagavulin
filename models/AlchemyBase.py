@@ -96,19 +96,13 @@ class AlchemyBase(object):
         data_frame.to_sql(con=conn, name=table_name, if_exists=if_exist, index=None)
         conn.close()
 
-    def execute_query(self, query, fetch_all=False):
+    def execute_query(self, query):
         """
         It will execute the passed SQL query.
         :param query:
-        :param fetch_all:
-            This param have a meaning when the query return rows.
-            When it is True, the function will return a list of one you select.
-            When False, then the function will return an iterator.
-        :return: list, or an iterator.
+        :return: 
         """
         conn = self.get_connection()
         res = conn.execute(query)
-        if res.returns_rows is True and fetch_all is True:
-            return res.fetchall()
         conn.close()
         return res
