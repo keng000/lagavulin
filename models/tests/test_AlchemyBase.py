@@ -21,7 +21,8 @@ class TestAlchemyBase(unittest.TestCase):
 
     def test_create_table(self):
         self.base.create_table("test1")
-        element = self.base.execute_query("DESC test1", fetch_all=True)
+        element = self.base.execute_query("DESC test1")
+        element = element.fetchall()
         answer = [
             ("test_id", "int(11)", "NO", "PRI", None, "auto_increment"),
             ("test_text", "text", "YES", "", None, ""),
@@ -47,7 +48,8 @@ class TestAlchemyBase(unittest.TestCase):
         df = pd.DataFrame([[1, 'lagavulin'], [2, 'laphroaig']], columns=['test_id', 'test_content'])
         self.base.insert_dataframe(df, 'test2')
 
-        res = self.base.execute_query("SELECT test_id, test_content FROM test2", fetch_all=True)
+        res = self.base.execute_query("SELECT test_id, test_content FROM test2")
+        res = res.fetchall()
         answer = [(1, 'lagavulin'), (2, 'laphroaig')]
         self.assertListEqual(res, answer)
 
