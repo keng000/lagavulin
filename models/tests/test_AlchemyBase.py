@@ -6,7 +6,7 @@ import sqlalchemy
 
 class TestAlchemyBase(unittest.TestCase):
     def setUp(self):
-        self.base = AlchemyBase()
+        self.base = AlchemyBase(yaml_file_path="../../config/mysql.yml")
 
     def test_get_engine(self):
         self.assertIsInstance(self.base.engine, sqlalchemy.engine.base.Engine)
@@ -21,7 +21,7 @@ class TestAlchemyBase(unittest.TestCase):
 
     def test_create_table(self):
         self.base.create_table("test1")
-        element = self.base.execute_query("DESC test1")
+        element = self.base.execute_query("DESC test1", fetch_all=True)
         answer = [
             ("test_id", "int(11)", "NO", "PRI", None, "auto_increment"),
             ("test_text", "text", "YES", "", None, ""),
@@ -35,7 +35,7 @@ class TestAlchemyBase(unittest.TestCase):
         table_names = self.base.execute_query("SHOW TABLES")
         answer = [("performance_test",), ("test1",), ("test2",), ("dummy",)]
         self.assertListEqual(sorted(table_names), sorted(answer))
-        
+
     def test_get_column_names(self):
         col_names = self.base.get_column_names("test1")
         answer = ["test_id", "test_text", "test_score"]
@@ -47,7 +47,7 @@ class TestAlchemyBase(unittest.TestCase):
         df = pd.DataFrame([[1, 'lagavulin'], [2, 'laphroaig']], columns=['test_id', 'test_content'])
         self.base.insert_dataframe(df, 'test2')
 
-        res = self.base.execute_query("SELECT test_id, test_content FROM test2")
+        res = self.base.execute_query("SELECT test_id, test_content FROM test2", fetch_all=True)
         answer = [(1, 'lagavulin'), (2, 'laphroaig')]
         self.assertListEqual(res, answer)
 
