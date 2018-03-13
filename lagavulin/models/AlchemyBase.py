@@ -100,7 +100,7 @@ class AlchemyBase(object):
         """
         It will execute the passed SQL query.
         :param query:
-        :return: 
+        :return:
         """
         conn = self.get_connection()
         res = conn.execute(query)
