@@ -84,3 +84,12 @@ class profilingAssistant(object):
         :return: if the output is same then True, else False
         """
         raise NotImplementedError("You should implement is_sane() before running.")
+
+# for decorator
+def timemeasure(func):
+    def wrapper(*args, **kwargs):
+        st = datetime.now()
+        func(*args, **kwargs)
+        print(f"Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
+    return wrapper
+
