@@ -5,6 +5,9 @@ import pstats
 from scipy.stats import norm
 import time
 from tqdm import tqdm
+from datetime import datetime
+from contextlib import contextmanager
+
 
 sort_by_cand = [
     'calls',  # 呼び出し数
@@ -85,11 +88,26 @@ class profilingAssistant(object):
         """
         raise NotImplementedError("You should implement is_sane() before running.")
 
+
 # for decorator
-def timemeasure(func):
+def time_measure_decorator(func):
     def wrapper(*args, **kwargs):
         st = datetime.now()
         func(*args, **kwargs)
         print(f"Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
     return wrapper
 
+
+@contextmanager
+def time_measure_manager():
+    st = datetime.now()
+    yield
+    print(f"Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
+
+
+""" time_measure_manager(contextmanager) sample
+import time
+for idx in range(5):
+    with time_measure_manager():
+        time.sleep(0.5)
+"""
