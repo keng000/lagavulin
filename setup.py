@@ -12,17 +12,17 @@ setup(
     author_email='4s.flashback@gmail.com',
     url='https://github.com/keng000/lagavulin',
     install_requires=[
-        'certifi==2018.4.16',
-        'numpy==1.14.4',
-        'pandas==0.23.0',
-        'PyMySQL==0.8.1',
-        'python-dateutil==2.6.1',
-        'pytz==2018.3',
-        'PyYAML==3.12',
-        'scipy==1.1.0',
-        'six==1.11.0',
-        'SQLAlchemy==1.2.8',
-        'tqdm==4.19.5'
+	'certifi',
+	'numpy',
+	'pandas',
+	'PyMySQL',
+	'python-dateutil',
+	'pytz',
+	'PyYAML',
+	'scipy',
+	'six',
+	'SQLAlchemy',
+	'tqdm'
     ],
     packages=find_packages()
 )
