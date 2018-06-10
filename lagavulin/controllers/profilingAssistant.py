@@ -93,8 +93,10 @@ class profilingAssistant(object):
 def time_measure_decorator(func):
     def wrapper(*args, **kwargs):
         st = datetime.now()
-        func(*args, **kwargs)
+        ret = func(*args, **kwargs)
         print(f"Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
+        return ret
+
     return wrapper
 
 
