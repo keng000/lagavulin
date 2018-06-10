@@ -101,10 +101,15 @@ def time_measure_decorator(func):
 
 
 @contextmanager
-def time_measure_manager():
+def time_measure_manager(msg=None):
+    if msg is not None:
+        print(f"{msg} Start.")
     st = datetime.now()
-    yield
-    print(f"Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
+    try:
+        yield
+        print(f"{msg} End. Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
+    finally:
+        print(f"{msg} End. Exception occurred.")
 
 
 """ time_measure_manager(contextmanager) sample
