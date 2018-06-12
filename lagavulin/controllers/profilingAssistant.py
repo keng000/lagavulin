@@ -111,9 +111,9 @@ def time_measure_manager(msg=None):
     print(f"Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
 
 
-""" time_measure_manager(contextmanager) sample"""
+""" time_measure_manager(contextmanager) sample
 import time
 for idx in range(5):
     with time_measure_manager():
         time.sleep(0.5)
-""""""
+"""
