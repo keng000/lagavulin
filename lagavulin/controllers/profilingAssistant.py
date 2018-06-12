@@ -30,6 +30,9 @@ sort_by_cand = [
 class profilingAssistant(object):
 
     def profiling(self, func, sortby=None, **kw):
+        """
+        関数を渡して、その関数のプロファイリングを行う。
+        """
         p = cProfile.Profile()
         p.enable()
         func(**kw)
@@ -42,6 +45,9 @@ class profilingAssistant(object):
             raise ValueError("Unknown key for sort stats -> sortby:{}\nChoose from here.\n{}".format(sortby, sort_by_cand))
 
     def timeCalc(self, func, basefunc=None, iteration=30, significance_level=0.05, **kw):
+        """
+        関数を渡して、その関数の実行時間の統計を取る。
+        """
 
         new_func_time_result = np.zeros(iteration)
         base_func_time_result = np.zeros(iteration)
@@ -99,6 +105,13 @@ def time_measure_decorator(func):
 
     return wrapper
 
+"""time_measure_decorator sample
+@time_measure_decorator
+def func():
+    # some processing
+    pass
+
+"""
 
 @contextmanager
 def time_measure_manager(msg=None):
