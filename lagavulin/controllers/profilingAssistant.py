@@ -116,12 +116,14 @@ def func():
 @contextmanager
 def time_measure_manager(msg=None):
     if msg is not None:
-        print(f"{msg} Start.")
+        print(msg, end="")
+    print(" Start.")
+
     st = datetime.now()
     yield
     if msg is not None:
-        print(f"{msg} End. ", end="")
-    print(f"Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
+        print(msg, end="")
+    print(f" End. Time Spent: {(datetime.now() - st).total_seconds():.3f}s")
 
 
 """ time_measure_manager(contextmanager) sample
