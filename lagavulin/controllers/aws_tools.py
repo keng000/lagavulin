@@ -15,6 +15,10 @@ def create_s3_session():
 
 
 def download_file_from_s3(file_path_in_s3, download_path, session=None, do_retry=False):
+
+    # boto3はスレッドセーフではないため、各スレッド内でセッションを生成する必要がある。
+    # その時、スレッド内でセッション生成に失敗する事例があるため、セッションが生成できるまでトライする。
+    # https://github.com/boto/boto3/issues/454
     while session is None:
         try:
             session = create_s3_session()
