@@ -15,8 +15,11 @@ def create_s3_session():
 
 
 def download_file_from_s3(file_path_in_s3, download_path, session=None, do_retry=False):
-    if session is None:
-        session = create_s3_session()
+    while session is None:
+        try:
+            session = create_s3_session()
+        except:
+            session = None
 
     try:
         session.download_file('streamed', file_path_in_s3, download_path)
@@ -26,10 +29,25 @@ def download_file_from_s3(file_path_in_s3, download_path, session=None, do_retry
 
         if e.response['Error']['Code'] == "404":
             msg = f"The s3 file does not exists: {file_path_in_s3}"
-            print(msg)
-            raise KeyError(msg)
+            print_log(msg)
 
         if do_retry:
             download_file_from_s3(file_path_in_s3, download_path, do_retry=False)
 
-        print(f"The s3 file failed to download: {file_path_in_s3}")
+        print_log(f"The s3 file failed to download: {file_path_in_s3}")
+
+
+def download_with_property_list(dp):
+    download_file_from_s3(dp.s3_path, dp.save_path)
+
+
+def concurrent_downloading(download_property_list):
+    # (論理的に)搭載されたコア数＊５スレッドでダウンロードをconcurrent化
+    with ThreadPoolExecutor() as executor:
+        result = executor.map(download_with_property_list, download_property_list)
+
+        # 完了したものから完了通知。完了するものが出てくるまでresultにはwaitがかかる。
+        for idx, _ in enumerate(result):
+            print(f"{idx+1}/{len(download_property_list)}")
+
+    print_log("Download Done")
