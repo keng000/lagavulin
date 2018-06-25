@@ -38,10 +38,22 @@ def download_file_from_s3(file_path_in_s3, download_path, session=None, do_retry
 
 
 def download_with_property_list(dp):
+    """
+    ひとつのDownloadPropertyに対してダウンロード処理を行う.
+    :param dp: 
+        namedtuple('DownloadProperty', ['s3_path', 'save_path'])
+        s3_path: ダウンロードするS3のパス.
+        save_path: ダウンロード先となるローカルのパス.
+    """
     download_file_from_s3(dp.s3_path, dp.save_path)
 
 
 def concurrent_downloading(download_property_list):
+    """
+    :param download_property_list: 
+        DownloadPropertyのリスト. 
+        DownloadPropertyについては download_with_property_list() へ.
+    """
     # (論理的に)搭載されたコア数＊５スレッドでダウンロードをconcurrent化
     with ThreadPoolExecutor() as executor:
         result = executor.map(download_with_property_list, download_property_list)
