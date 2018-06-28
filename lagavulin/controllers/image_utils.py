@@ -2,10 +2,10 @@ import matplotlib.pyplot as plt
 from matplotlib import patches, patheffects
 
 
-def show_image(img, ax=None, figsize=None):
+def show_image(img, ax=None, figsize=None, alpha=1.0):
     if ax is None: fig, ax = plt.subplots(figsize=figsize)
 
-    ax.imshow(img)
+    ax.imshow(img, alpha=alpha)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     return ax
