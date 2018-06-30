@@ -22,9 +22,13 @@ class UnionFindTree(object):
                 self.rank[x] += 1
 
     def find(self, x):
-        while x != self.parent[x]:
-            x = self.parent[x]
-        return x
+        # 集約処理
+        if x == self.parent[x]:
+            return x
+        else:
+            self.parent[x] = self.find(self.parent[x])
+            return self.parent[x]
+
 
     def is_same(self, x, y):
         return self.find(x) == self.find(y)
