@@ -2,7 +2,7 @@ import hyperdash
 from contextlib import contextmanager
 class debugHyperDash(object):
     def metric(self, name, value):
-        print()
+        print(f"| {name}: {value:10f} |")
 
     def end(self):
         pass
