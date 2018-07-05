@@ -1,3 +1,5 @@
+from typing import Iterable
+
 import matplotlib.pyplot as plt
 from matplotlib import patches, patheffects
 
@@ -55,3 +57,59 @@ def Intersection_over_Union(object_box_coords, true_box_coords):
     iou = interArea / float(boxAArea + boxBArea - interArea)
     return iou
 
+
+def visualize_segment_map(
+        base_img: np.ndarray, segment_map: np.ndarray, class_num: int,
+        ignore_class: Iterable[int], plot: bool =True, is_gray_scale: bool =False
+):
+    """
+    Visualize function for Semantic Segmentation.
+    :param base_img:
+    :param segment_map: same size with base_img. when the class variation is 0~4,
+                            then each element in segment_map would be 0~4.
+    :param class_num: the number of class. this function assume the label is continuous within 0~class_num.
+    :param ignore_class:
+    :param plot: if true, then the base_img and segment_map would be plotted.
+    :param is_gray_scale: if true, then the image would converted before plotting.
+    :return:
+    """
+    Sky = [128, 128, 128]
+    Building = [128, 0, 0]
+    Pole = [192, 192, 128]
+    Road_marking = [255, 69, 0]
+    Road = [128, 64, 128]
+    Pavement = [60, 40, 222]
+    Tree = [128, 128, 0]
+    SignSymbol = [192, 128, 128]
+    Fence = [64, 64, 128]
+    Car = [64, 0, 128]
+    Pedestrian = [64, 64, 0]
+    Bicyclist = [0, 128, 192]
+    Unlabelled = [0, 0, 0]
+
+    label_colours = np.array([Unlabelled, Sky, Building, Pole, Road_marking, Road, Pavement,
+                              Tree, SignSymbol, Fence, Car, Pedestrian, Bicyclist])
+
+    r = segment_map.copy()
+    g = segment_map.copy()
+    b = segment_map.copy()
+    for l in range(0, class_num):
+        if l in ignore_class:
+            continue
+        r[segment_map == l] = label_colours[l, 0]
+        g[segment_map == l] = label_colours[l, 1]
+        b[segment_map == l] = label_colours[l, 2]
+
+    rgb = np.zeros((segment_map.shape[0], segment_map.shape[1], 3))
+    rgb[:, :, 0] = (r / 255.0)
+    rgb[:, :, 1] = (g / 255.0)
+    rgb[:, :, 2] = (b / 255.0)
+
+    if plot:
+        if is_gray_scale:
+            base_img = cv2.cvtColor(base_img, cv2.COLOR_GRAY2RGB)
+        ax = show_image(base_img)
+        show_image(segment_map, ax=ax, alpha=0.6)
+        plt.show()
+    else:
+        return rgb
