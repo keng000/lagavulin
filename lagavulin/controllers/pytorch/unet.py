@@ -54,7 +54,7 @@ class Unet(nn.Module):
         # Reference: https://arxiv.org/abs/1505.04597
     INPUT_IMG_SIZE = (572, 572)
 
-    def __init__(self, n_classes, in_channels=3, use_deconv=True, scale = 4, aplly_batchnorm=True):
+    def __init__(self, n_classes, in_channels=3, use_deconv=True, scale=4, aplly_batchnorm=True):
         super().__init__()
         self.use_deconv = use_deconv
         self.in_channels = in_channels
@@ -105,6 +105,7 @@ class Unet(nn.Module):
 
         final = self.final(up1)
 
+        # Reshape to same as input size.
+        final = F.upsample(final, size=self.INPUT_IMG_SIZE, mode='bilinear')
         return final
-
 
