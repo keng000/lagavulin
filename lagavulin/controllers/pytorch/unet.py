@@ -4,10 +4,10 @@ import torch.nn.functional as F
 
 
 class UnetConv2(nn.Module):
-    def __init__(self, in_size, out_size, aplly_batchnorm):
+    def __init__(self, in_size, out_size, apply_batchnorm):
         super().__init__()
 
-        if aplly_batchnorm:
+        if apply_batchnorm:
             self.conv1 = nn.Sequential(
                 nn.Conv2d(in_size, out_size, 3, 1, 0),
                 nn.BatchNorm2d(out_size),
@@ -51,35 +51,32 @@ class UnetUp(nn.Module):
 
 
 class Unet(nn.Module):
-        # Reference: https://arxiv.org/abs/1505.04597
+    # Reference: https://arxiv.org/abs/1505.04597
     INPUT_IMG_SIZE = (572, 572)
 
-    def __init__(self, n_classes, in_channels=3, use_deconv=True, scale=4, aplly_batchnorm=True):
+    def __init__(self, n_classes, in_channels=3, use_deconv=True, scale=4, apply_batchnorm=True):
         super().__init__()
-        self.use_deconv = use_deconv
-        self.in_channels = in_channels
-        self.aplly_batchnorm = aplly_batchnorm
 
         filters = [16 * scale, 32 * scale, 64 * scale, 128 * scale, 256 * scale]
 
-        self.conv1 = UnetConv2(self.in_channels, filters[0], self.aplly_batchnorm)
+        self.conv1 = UnetConv2(in_channels, filters[0], apply_batchnorm)
         self.maxpool1 = nn.MaxPool2d(kernel_size=2)
 
-        self.conv2 = UnetConv2(filters[0], filters[1], self.aplly_batchnorm)
+        self.conv2 = UnetConv2(filters[0], filters[1], apply_batchnorm)
         self.maxpool2 = nn.MaxPool2d(kernel_size=2)
 
-        self.conv3 = UnetConv2(filters[1], filters[2], self.aplly_batchnorm)
+        self.conv3 = UnetConv2(filters[1], filters[2], apply_batchnorm)
         self.maxpool3 = nn.MaxPool2d(kernel_size=2)
 
-        self.conv4 = UnetConv2(filters[2], filters[3], self.aplly_batchnorm)
+        self.conv4 = UnetConv2(filters[2], filters[3], apply_batchnorm)
         self.maxpool4 = nn.MaxPool2d(kernel_size=2)
 
-        self.center = UnetConv2(filters[3], filters[4], self.aplly_batchnorm)
+        self.center = UnetConv2(filters[3], filters[4], apply_batchnorm)
 
-        self.up_concat4 = UnetUp(filters[4], filters[3], self.use_deconv)
-        self.up_concat3 = UnetUp(filters[3], filters[2], self.use_deconv)
-        self.up_concat2 = UnetUp(filters[2], filters[1], self.use_deconv)
-        self.up_concat1 = UnetUp(filters[1], filters[0], self.use_deconv)
+        self.up_concat4 = UnetUp(filters[4], filters[3], use_deconv)
+        self.up_concat3 = UnetUp(filters[3], filters[2], use_deconv)
+        self.up_concat2 = UnetUp(filters[2], filters[1], use_deconv)
+        self.up_concat1 = UnetUp(filters[1], filters[0], use_deconv)
 
         self.final = nn.Conv2d(filters[0], n_classes, 1)
 
@@ -108,4 +105,5 @@ class Unet(nn.Module):
         # Reshape to same as input size.
         final = F.upsample(final, size=self.INPUT_IMG_SIZE, mode='bilinear')
         return final
+
 
