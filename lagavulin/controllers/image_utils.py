@@ -14,7 +14,7 @@ def show_image(img, ax=None, figsize=None, alpha=1.0, show=True):
     if show:
         plt.show()
     else:
-     return ax
+        return ax
 
 
 def draw_outline(obj, lw=4):
