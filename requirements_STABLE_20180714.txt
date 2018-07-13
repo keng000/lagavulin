@@ -1,7 +1,11 @@
 certifi==2018.4.16
+cycler==0.10.0
+kiwisolver==1.0.1
+matplotlib==2.2.2
 numpy==1.14.4
 pandas==0.23.0
 PyMySQL==0.8.1
+pyparsing==2.2.0
 python-dateutil==2.6.1
 pytz==2018.3
 PyYAML==3.12
