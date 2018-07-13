@@ -1,7 +1,67 @@
 from typing import Iterable
-
 import matplotlib.pyplot as plt
 from matplotlib import patches, patheffects
+import numpy as np
+
+
+class Point:
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+
+    def __getitem__(self, idx):
+        if idx == 0: return self.x
+        if idx == 1: return self.y
+        raise IndexError
+
+
+class BBox:
+    def __init__(self, left: int, top: int, right: int, bottom: int):
+        self.__min = Point(left, top)
+        self.__max = Point(right, bottom)
+        self.height = self._height()
+        self.width = self._width()
+
+    def get_min_point(self) -> Point:
+        return self.__min
+    
+    def get_max_point(self) -> Point:
+        return self.__max
+    
+    def _width(self) -> int:
+        return self.__max.x - self.__min.x
+    
+    def _height(self) -> int:
+        return self.__max.y - self.__min.y
+
+    def is_covered(self, bbox):
+        assert isinstance(bbox, BBox)
+        if self.__min.x > bbox.__max.x: return False
+        if self.__max.x < bbox.__min.x: return False
+        if self.__min.y > bbox.__max.y: return False
+        if self.__max.y < bbox.__min.y: return False
+        return True
+    
+    def intersection_over_union(self, bbox):
+        assert isinstance(bbox, BBox)
+
+        # 2領域が被覆していない場合、被覆領域の値を0に.
+        if self.is_covered(bbox):
+            interArea = 0
+
+        else:
+            xA = max(self.__min.x, bbox.__min.x)
+            yA = max(self.__min.y, bbox.__min.y)
+            xB = min(self.__max.x, bbox.__max.x)
+            yB = min(self.__max.y, bbox.__max.y)
+
+            interArea = (xB - xA + 1) * (yB - yA + 1)
+
+        boxAArea = (bbox.height + 1) * (bbox.width + 1)
+        boxBArea = (self.height + 1) * (self.width + 1)
+
+        iou = interArea / float(boxAArea + boxBArea - interArea)
+        return iou
 
 
 def show_image(img, ax=None, figsize=None, alpha=1.0, show=True):
@@ -17,17 +77,17 @@ def show_image(img, ax=None, figsize=None, alpha=1.0, show=True):
         return ax
 
 
+def draw_bbox(ax, bbox: BBox, color='white'):
+    patch = ax.add_patch(patches.Rectangle(bbox.get_min_point(), bbox.width, bbox.height, fill=False, edgecolor=color, lw=2))
+    draw_outline(patch)
+
+
 def draw_outline(obj, lw=4):
     obj.set_path_effects([patheffects.Stroke(linewidth=lw, foreground='black'), patheffects.Normal()])
 
 
-def draw_bbox(ax, bbox, color='white'):
-    patch = ax.add_patch(patches.Rectangle(bbox[:2], *bbox[-2:], fill=False, edgecolor=color, lw=2))
-    draw_outline(patch)
-
-
-def draw_text(ax, xy, text, size=14, color='white'):
-    text = ax.text(*xy, text, verticalalignment='top', color=color, fontsize=size, weight='bold')
+def draw_text(ax, point: Point, text, size=14, color='white'):
+    text = ax.text(point.x, point.y, text, verticalalignment='top', color=color, fontsize=size, weight='bold')
     draw_outline(text)
 
 
