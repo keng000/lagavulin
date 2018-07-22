@@ -64,13 +64,14 @@ class BBox:
         return iou
 
 
-def show_image(img, ax=None, figsize=None, alpha=1.0, show=True):
+def show_image(img, ax=None, figsize=None, alpha=1.0, show=True, BGR=False):
     if ax is None: fig, ax = plt.subplots(figsize=figsize)
+    if BGR: img = img[:, :, [2, 1, 0]]
 
     ax.imshow(img, alpha=alpha)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
-    
+
     if show:
         plt.show()
 
