@@ -125,7 +125,7 @@ def Intersection_over_Union(object_box_coords, true_box_coords):
 
 def visualize_segment_map(
         base_img: np.ndarray, segment_map: np.ndarray, class_num: int,
-        ignore_class: Iterable[int], plot: bool =True, is_gray_scale: bool =False
+        ignore_class: Iterable[int] = (), is_gray_scale: bool = False
 ):
     """
     Visualize function for Semantic Segmentation.
@@ -170,11 +170,9 @@ def visualize_segment_map(
     rgb[:, :, 1] = (g / 255.0)
     rgb[:, :, 2] = (b / 255.0)
 
-    if plot:
-        if is_gray_scale:
-            base_img = cv2.cvtColor(base_img, cv2.COLOR_GRAY2RGB)
-        ax = show_image(base_img)
-        show_image(segment_map, ax=ax, alpha=0.6)
-        plt.show()
-    else:
-        return rgb
+    if is_gray_scale:
+        base_img = cv2.cvtColor(base_img, cv2.COLOR_GRAY2RGB)
+    ax = show_image(base_img, show=False)
+    show_image(segment_map, ax=ax, alpha=0.6)
+    plt.show()
+
