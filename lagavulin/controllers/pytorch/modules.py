@@ -31,14 +31,13 @@ class ASPPModule(nn.Module):
 
     def forward(self, x):
         h = self.imagepool(x)
-        h = [F.upsample(h, size=x.shape[2:], mode="bilinear", align_corners=False)]
+        h = F.upsample(h, size=x.shape[2:], mode="bilinear", align_corners=False)
         for stage in self.stages.children():
-            h += [stage(x)]
-        h = torch.cat(h, dim=1)
+            h += stage(x)
         return h
 
 
-class _ConvBatchNormReLU(nn.Sequential):
+class ConvBatchNormReLU(nn.Sequential):
     def __init__(
         self,
         in_channels,
@@ -46,7 +45,8 @@ class _ConvBatchNormReLU(nn.Sequential):
         kernel_size,
         stride,
         padding,
-        dilation,
+        dilation=1,
+        batchnorm=True,
         relu=True,
     ):
         super().__init__()
@@ -62,12 +62,9 @@ class _ConvBatchNormReLU(nn.Sequential):
                 bias=False,
             ),
         )
-        self.add_module(
-            "bn",
-            nn.BatchNorm2d(
-                num_features=out_channels, eps=1e-5, momentum=0.999, affine=True
-            ),
-        )
+
+        if batchnorm:
+            self.add_module("bn", nn.BatchNorm2d(num_features=out_channels, eps=1e-5, momentum=0.999, affine=True),)
 
         if relu:
             self.add_module("relu", nn.ReLU())
