@@ -64,17 +64,20 @@ class BBox:
         return iou
 
 
-def show_image(img, ax=None, figsize=None, alpha=1.0, show=True, BGR=False):
-    if ax is None: fig, ax = plt.subplots(figsize=figsize)
-    if BGR: img = img[:, :, [2, 1, 0]]
+def show_image(image, ax=None, figsize=None, size_factor=16, alpha=1.0, show=True):
+    if figsize is None:
+        height = int(image.shape[0] / float(max(image.shape[:2])) * size_factor)
+        width = int(image.shape[1] / float(max(image.shape[:2])) * size_factor)
+        figsize = (width, height)
 
-    ax.imshow(img, alpha=alpha)
+    if ax is None: fig, ax = plt.subplots(figsize=figsize)
+
+    ax.imshow(image, alpha=alpha)
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 
     if show:
         plt.show()
-
     return ax
 
 
