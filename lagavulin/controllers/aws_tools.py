@@ -1,4 +1,6 @@
 import boto3
+from concurrent.futures import ThreadPoolExecutor
+from botocore.exceptions import ClientError
 
 
 def load_keys():
