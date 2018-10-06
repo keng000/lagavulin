@@ -38,3 +38,7 @@ for idx in range(5):
     with time_measure_manager():
         time.sleep(0.5)
 """
+
+if __name__ == '__main__':
+    with time_measure_manager("test"):
+        print("Processing")
