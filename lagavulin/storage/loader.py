@@ -1,19 +1,23 @@
 from pathlib import Path
 from urllib.parse import urlparse
 
+from .file import FileSystem
+from .gcs import GCS
+from .s3 import S3
 from .storage import Storage
 
 
 def new_storage(furi: str) -> Storage:
     p = urlparse(furi)
     if p.scheme == "file":
-        pass
+        dsn = Path(p.netloc) / p.path
+        return FileSystem(str(dsn))
 
     elif p.scheme == "s3":
-        pass
+        return S3(p.netloc)
 
     elif p.scheme == "gcs":
-        pass
+        return GCS(p.netloc)
 
     else:
         raise RuntimeError(f'invalid scheme: "{furi}"')
