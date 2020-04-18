@@ -7,6 +7,24 @@ from .s3 import S3
 from .storage import Storage
 
 
+"""
+```python
+if __name__ == '__main__':
+    storage = new_storage(furi="s3://bucket")
+    data: bytes = storage.read("file_path")
+    print(data.decode())
+
+    storage = new_storage(furi="file:///path/to/dir")
+    data: bytes = storage.read("file_path")
+    print(data.decode())
+
+    storage = new_storage(furi="gcs://bucket")
+    data: bytes = storage.read("file_path")
+    print(data.decode())
+```
+"""
+
+
 def new_storage(furi: str) -> Storage:
     p = urlparse(furi)
     if p.scheme == "file":
