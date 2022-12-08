@@ -1,4 +1,4 @@
-certifi==2018.4.16
+certifi==2022.12.7
 cycler==0.10.0
 kiwisolver==1.0.1
 matplotlib==2.2.2
